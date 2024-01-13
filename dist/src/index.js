@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const bodyParser = require("body-parser");
 const openTrade_1 = require("./bybit/openTrade");
-const IP = require("ip");
 const app = express();
 const port = 3555;
 app.use(bodyParser.urlencoded());

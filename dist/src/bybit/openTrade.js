@@ -15,29 +15,25 @@ const calculateQuantity_1 = require("./calculateQuantity");
 const getBalance_1 = require("./getBalance");
 const getPosition_1 = require("./getPosition");
 const bybit_api_1 = require("bybit-api");
-const key = "moRFSNwboHYRxah9ya";
-const secret = "PiMfBRLJnGKjkfKocbwuxCp1JzPzzSKw5Mee";
+const key = process.env.BYBIT_API_KEY;
+const secret = process.env.BYBIT_API_SECRET;
+console.log({ key, secret });
 exports.client = new bybit_api_1.RestClientV5({
     key,
-    secret
+    secret,
 });
 function openTrade(action) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const balance = yield (0, getBalance_1.getBalance)();
-            console.log({ balance });
             const openPosition = yield (0, getPosition_1.getPosition)();
-            console.log({ openPosition });
             const balanceInTrade = parseFloat(openPosition.positionValue) / 10 / balance;
-            console.log({ balanceInTrade });
             const btcPrice = parseFloat(openPosition.markPrice);
             console.log({ btcPrice });
             // CHECKS IF I HAVE ANY POSITION IF 0 THAT MEANS NO
             if (openPosition.positionValue === "0") {
                 const quantity = (0, calculateQuantity_1.calculateQuantity)(10, balance, btcPrice);
-                console.log({ quantity, action });
                 const order = yield (0, trade_1.trade)(quantity, action);
-                console.log(order);
             }
             else {
                 // CHECK THAT I HAVE ALREADY BOUGHT FOR 10% OF BALANCE
