@@ -4,24 +4,30 @@ import { getBalance } from "./getBalance";
 import { getPosition } from "./getPosition";
 import { RestClientV5 } from "bybit-api";
 
+const key = "moRFSNwboHYRxah9ya";
+const secret = "PiMfBRLJnGKjkfKocbwuxCp1JzPzzSKw5Mee";
 export const client = new RestClientV5({
-  key: process.env.BYBIT_API_KEY,
-  secret: process.env.BYBIT_API_SECRET,
+  key,
+  secret
 });
 
 export async function openTrade(action: "Buy" | "Sell") {
   try {
     const balance = await getBalance();
+    console.log({balance})
     const openPosition = await getPosition();
-    console.log(openPosition);
+    console.log({openPosition});
     const balanceInTrade =
       parseFloat(openPosition.positionValue) / 10 / balance;
-    console.log(balanceInTrade);
+    console.log({balanceInTrade});
     const btcPrice = parseFloat(openPosition.markPrice);
+    console.log({btcPrice})
     // CHECKS IF I HAVE ANY POSITION IF 0 THAT MEANS NO
     if (openPosition.positionValue === "0") {
       const quantity = calculateQuantity(10, balance, btcPrice);
-      await trade(quantity, action);
+      console.log({quantity,action});
+      const order = await trade(quantity, action);
+      console.log(order);
     } else {
       // CHECK THAT I HAVE ALREADY BOUGHT FOR 10% OF BALANCE
       if (balanceInTrade < 0.15) {
@@ -45,6 +51,11 @@ export async function openTrade(action: "Buy" | "Sell") {
           const quantity = calculateQuantity(10, balance, btcPrice);
           await trade(quantity, action);
         }
+      }
+      else if (balanceInTrade > 0.51 && openPosition.side !== action) {
+        await trade(openPosition.positionValue, action);
+        const quantity = calculateQuantity(10, balance, btcPrice);
+        await trade(quantity, action);
       }
     }
   } catch (e) {

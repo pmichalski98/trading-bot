@@ -1,9 +1,9 @@
 {
-  "type": "module",
   "name": "aidevs2",
   "scripts": {
+    "pm2": "pm2 start src/index.ts --watch",
     "build": "npx tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "dev": "nodemon"
   },
   "devDependencies": {
@@ -25,6 +25,7 @@
     "bybit-api": "^3.8.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "ip": "^1.1.8",
     "pm2": "^5.3.0"
   },
   "keywords": [],
